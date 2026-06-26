@@ -1,0 +1,77 @@
+USE studentdb;
+
+CREATE TABLE Employees (
+emp_id INT PRIMARY KEY,
+name VARCHAR(50) NOT NULL,
+department VARCHAR(50),
+salary INT,
+age INT,
+city VARCHAR(50),
+manager_id INT,
+joining_date DATE
+);
+
+INSERT INTO Employees VALUES
+(1, 'Navneet', 'CSE', 60000, 25, 'Rajpura', 101, '2026-06-15'),
+(2, 'Navreet', 'ECE', 45000, 23, 'Mumbai', 102, '2025-01-10'),
+(3, 'Dheeptha', 'IT', 70000, 28, 'Pune', 101, '2027-03-20'),
+(4, 'Anshika', 'CSE', 52000, 26, 'Delhi', 103, '2024-08-05'),
+(5, 'Anshika Srivastava', 'ECE', 48000, 24, 'Pune', 102, '2025-05-18'),
+(6, 'Neha', 'IT', 75000, 29, 'Bangalore', 101, '2020-11-25'),
+(7, 'Amit', 'IT', 72000, 27, 'Pune', 101, '2021-03-20'),
+(8, 'Priya', 'CSE', 55000, 26, 'Delhi', 103, '2022-08-05'),
+(9, 'Rohit', 'ECE', 48000, 24, 'Pune', 102, '2023-05-18'),
+(10, 'Neha', 'HR', 75000, 29, 'Bangalore', 101, '2020-11-25'),
+(11, 'Karan', 'CSE', 51000, 25, 'Mumbai', 103, '2022-12-12'),
+(12, 'Simran', 'ECE', 46000, 23, 'Chandigarh', 102, '2023-07-07');
+
+CREATE TABLE department (
+dept_id INT PRIMARY KEY,
+dept_name VARCHAR(50)
+);
+
+INSERT INTO department VALUES
+(101, 'IT'),
+(102, 'HR'),
+(103, 'CSE'),
+(104, 'ECE');
+
+-- duplicate record delete
+INSERT INTO employees VALUES
+(13,'Neha','IT',85000,30,'Pune',102,'2020-09-12'),
+(14,'Neha','IT',85000,30,'Pune',102,'2020-09-12');
+
+-- checking how many duplicates exist
+SELECT name, department, salary, age, city, manager_id, joining_date, COUNT(*)
+FROM Employees
+GROUP BY name, department, salary, age, city, manager_id, joining_date
+HAVING COUNT(*) > 1;
+
+-- deleting duplicates
+DELETE e1 FROM Employees e1
+JOIN Employees e2
+ON e1.name = e2.name
+AND e1.department = e2.department
+AND e1.salary = e2.salary
+AND e1.age = e2.age
+AND e1.city = e2.city
+AND e1.manager_id = e2.manager_id
+AND e1.joining_date = e2.joining_date
+AND e1.emp_id > e2.emp_id;
+
+-- queries
+SELECT * FROM employees;
+SELECT name FROM employees;
+SELECT * FROM employees WHERE salary > 50000;
+SELECT * FROM employees WHERE city = 'Pune';
+SELECT * FROM employees WHERE age BETWEEN 25 AND 30;
+SELECT * FROM employees WHERE name LIKE 'A%';
+SELECT * FROM employees WHERE salary IS NULL;
+SELECT * FROM employees ORDER BY salary ASC;
+SELECT * FROM employees ORDER BY salary DESC;
+SELECT * FROM employees LIMIT 5;
+SELECT DISTINCT salary FROM employees ORDER BY salary DESC LIMIT 2, 1;
+SELECT MAX(salary) AS highest_salary FROM employees;
+SELECT MAX(salary) AS second_highest_salary FROM employees WHERE salary < (SELECT MAX(salary) FROM employees);
+SELECT AVG(salary) AS average_salary FROM employees;
+SELECT e.name, d.dept_name FROM employees e INNER JOIN department d ON e.manager_id = d.dept_id;
